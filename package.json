@@ -1,0 +1,31 @@
+{
+  "name": "redis-nestjs",
+  "version": "0.0.1",
+  "description": "Redis client for Nestjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/wolffparkinson/redis-nestjs",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "prepublish": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@nestjs/common": "^10.3.10",
+    "redis": "^4.6.14"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^10.3.10",
+    "@types/node": "^20.14.9",
+    "prettier": "^3.3.2",
+    "redis": "^4.6.14",
+    "rimraf": "^5.0.7",
+    "typescript": "^5.5.2"
+  }
+}
