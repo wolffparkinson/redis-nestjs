@@ -18,7 +18,7 @@ export class RedisService {
   constructor(
     @InjectRedisClients()
     private readonly clients: Map<RedisClientID, RedisClient>,
-    @Inject(REDIS_MODULE_OPTIONS) private readonly options: RedisModuleOptions
+    @Inject(REDIS_MODULE_OPTIONS) private readonly options: RedisModuleOptions,
   ) {}
 
   getClients(): Map<RedisClientID, RedisClient> {
@@ -33,7 +33,8 @@ export class RedisService {
 
   private getOptions(id: RedisClientID): RedisClientOptions {
     const config = this.options.find((opt) => opt.id === id);
-    if (!config) throw new Error(`Client config not found : ${idStr(id)}`);
+    if (!config)
+      throw new Error(`Redis client config not found for id : ${idStr(id)}`);
     return config;
   }
 
@@ -73,7 +74,7 @@ export class RedisService {
     if (log.connect) {
       const level = log.connect;
       client.on('connect', () =>
-        this.logger[level](`Connecting to ${idStr(id)}`)
+        this.logger[level](`Connecting to ${idStr(id)}`),
       );
     }
 
@@ -81,7 +82,7 @@ export class RedisService {
     if (log.ready) {
       const level = log.ready;
       client.on('ready', () =>
-        this.logger[level](`Redis client is ready : ${idStr(id)}`)
+        this.logger[level](`Redis client is ready : ${idStr(id)}`),
       );
     }
 
@@ -89,7 +90,7 @@ export class RedisService {
     if (log.end) {
       const level = log.end;
       client.on('end', () =>
-        this.logger[level](`Connection closed : ${idStr(id)}`)
+        this.logger[level](`Connection closed : ${idStr(id)}`),
       );
     }
 
@@ -97,7 +98,7 @@ export class RedisService {
     if (log.reconnecting) {
       const level = log.reconnecting;
       client.on('reconnecting', () =>
-        this.logger[level](`Reconnecting : ${idStr(id)}`)
+        this.logger[level](`Reconnecting : ${idStr(id)}`),
       );
     }
 
@@ -105,7 +106,7 @@ export class RedisService {
     if (log.error) {
       const level = log.error;
       client.on('error', (error: Error) =>
-        this.logger[level](`[${idStr(id)}] : ${error.message}`)
+        this.logger[level](`[${idStr(id)}] : ${error.message}`),
       );
     }
   }

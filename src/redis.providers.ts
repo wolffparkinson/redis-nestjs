@@ -25,21 +25,24 @@ export const clients: Map<RedisClientID, RedisClient> = new Map<
 >();
 
 export function createClientOptionProvider(
-  id: RedisClientID = DEFAULT_CLIENT_ID
+  id: RedisClientID = DEFAULT_CLIENT_ID,
 ): Provider<RedisClientOptions> {
   return {
     provide: getClientOptionToken(id),
     inject: [REDIS_MODULE_OPTIONS],
     useFactory(options: RedisModuleOptions) {
-      const option = options.find((opt) => opt.id === id);
-      if (!option) throw new Error(`Client config not found : ${idStr(id)}`);
+      const option = options.find(
+        (opt) => (id === DEFAULT_CLIENT_ID && !opt.id) || opt.id === id,
+      );
+      if (!option)
+        throw new Error(`Redis client config not found : ${idStr(id)}`);
       return option;
     },
   };
 }
 
 export function createAsyncClientOptionProvider(
-  option: RedisModuleAsyncOption
+  option: RedisModuleAsyncOption,
 ) {
   return {
     provide: getClientOptionToken(option.id ?? DEFAULT_CLIENT_ID),
@@ -50,7 +53,7 @@ export function createAsyncClientOptionProvider(
 const logger = new Logger('RedisModule');
 
 export function createClientProvider(
-  id: RedisClientID = DEFAULT_CLIENT_ID
+  id: RedisClientID = DEFAULT_CLIENT_ID,
 ): Provider<RedisClient> {
   return {
     provide: getClientToken(id),
@@ -66,7 +69,7 @@ export function createClientProvider(
         if (log.ready) {
           const level = log.ready;
           client.on('ready', () =>
-            logger[level](`Redis client is ready : ${idStr(id)}`)
+            logger[level](`Redis client is ready : ${idStr(id)}`),
           );
         }
 
@@ -74,7 +77,7 @@ export function createClientProvider(
         if (log.end) {
           const level = log.end;
           client.on('end', () =>
-            logger[level](`Connection closed : ${idStr(id)}`)
+            logger[level](`Connection closed : ${idStr(id)}`),
           );
         }
 
@@ -82,7 +85,7 @@ export function createClientProvider(
         if (log.reconnecting) {
           const level = log.reconnecting;
           client.on('reconnecting', () =>
-            logger[level](`Reconnecting : ${idStr(id)}`)
+            logger[level](`Reconnecting : ${idStr(id)}`),
           );
         }
 
@@ -90,7 +93,7 @@ export function createClientProvider(
         if (log.error) {
           const level = log.error;
           client.on('error', (error: Error) =>
-            logger[level](`[${idStr(id)}] : ${error.message}`)
+            logger[level](`[${idStr(id)}] : ${error.message}`),
           );
         }
       }
